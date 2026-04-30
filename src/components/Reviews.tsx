@@ -91,7 +91,7 @@ export default function Reviews() {
             letterSpacing: '-0.3px',
           }}
         >
-          Wat gasten zeggen
+          Ervaringen van eerdere klanten
         </h2>
 
         <div

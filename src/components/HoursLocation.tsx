@@ -140,12 +140,20 @@ export default function HoursLocation() {
             Overtoom 95<br />
             1054 HD Amsterdam<br />
             <a
-              href="tel:0203707981"
+              href="tel:+31203707981"
               style={{ color: 'inherit', transition: 'opacity 0.2s' }}
               onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
               onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.72')}
             >
-              020-370-7981
+              +31 20 370 7981
+            </a><br />
+            <a
+              href="mailto:overtoom@koffie-academie.nl"
+              style={{ color: 'inherit', transition: 'opacity 0.2s' }}
+              onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+              onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.72')}
+            >
+              overtoom@koffie-academie.nl
             </a>
           </address>
 

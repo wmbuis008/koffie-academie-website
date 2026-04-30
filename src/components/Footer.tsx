@@ -12,7 +12,7 @@ const navLinks = [
 ]
 
 const socialLinks = [
-  { label: 'Instagram', href: '#' },
+  { label: 'Instagram', href: 'https://www.instagram.com/koffieacademie/', external: true },
   {
     label: 'Google Maps',
     href: 'https://maps.google.com/?q=Koffie+Academie,+Overtoom+95,+Amsterdam',
@@ -153,12 +153,20 @@ export default function Footer() {
               Overtoom 95<br />
               1054 HD Amsterdam<br />
               <a
-                href="tel:0203707981"
+                href="tel:+31203707981"
                 style={{ color: 'inherit', transition: 'opacity 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
                 onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
               >
-                020-370-7981
+                +31 20 370 7981
+              </a><br />
+              <a
+                href="mailto:overtoom@koffie-academie.nl"
+                style={{ color: 'inherit', transition: 'opacity 0.2s' }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
+              >
+                overtoom@koffie-academie.nl
               </a>
             </address>
           </div>
