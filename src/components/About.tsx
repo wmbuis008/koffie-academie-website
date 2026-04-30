@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 import Image from 'next/image'
 
 export default function About() {
@@ -11,39 +10,26 @@ export default function About() {
   const imageRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         contentRef.current,
         { x: -50, opacity: 0 },
         {
-          x: 0,
-          opacity: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          x: 0, opacity: 1, duration: 1.1, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
       gsap.fromTo(
         imageRef.current,
         { x: 50, opacity: 0 },
         {
-          x: 0,
-          opacity: 1,
-          duration: 1.1,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          x: 0, opacity: 1, duration: 1.1, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
     })
-
     return () => ctx.revert()
   }, [])
 
@@ -52,10 +38,7 @@ export default function About() {
       id="about"
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-warm-cream)',
-        padding: '140px 48px',
-      }}
+      style={{ background: 'var(--color-warm-cream)' }}
     >
       <div
         className="grid-2col"
@@ -68,10 +51,7 @@ export default function About() {
           alignItems: 'center',
         }}
       >
-        <div
-          ref={contentRef}
-          style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}
-        >
+        <div ref={contentRef} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           <h2
             style={{
               fontFamily: 'var(--font-serif)',
@@ -84,26 +64,12 @@ export default function About() {
           >
             Meer dan een<br />koffieshop
           </h2>
-          <p
-            style={{
-              fontSize: '18px',
-              lineHeight: 1.88,
-              color: 'var(--text-dark)',
-              opacity: 0.72,
-            }}
-          >
+          <p style={{ fontSize: '18px', lineHeight: 1.88, color: 'var(--text-dark)', opacity: 0.72 }}>
             Twee Italiaanse eigenaren die hun passie voor echte koffie en
             authentiek eten naar Amsterdam brachten. Een buurtcafé waar vaste
             klanten zich thuis voelen en eerstegangers terugkomen.
           </p>
-          <p
-            style={{
-              fontSize: '18px',
-              lineHeight: 1.88,
-              color: 'var(--text-dark)',
-              opacity: 0.72,
-            }}
-          >
+          <p style={{ fontSize: '18px', lineHeight: 1.88, color: 'var(--text-dark)', opacity: 0.72 }}>
             Gezellig genoeg om de hele dag te blijven, goed genoeg om te
             blijven terugkomen.
           </p>
@@ -115,6 +81,7 @@ export default function About() {
             }}
           >
             <div
+              aria-label="5 van 5 sterren"
               style={{
                 fontSize: '20px',
                 color: 'var(--color-terracotta)',
@@ -125,12 +92,7 @@ export default function About() {
               ★★★★★
             </div>
             <div
-              style={{
-                fontSize: '14px',
-                fontWeight: 500,
-                color: 'var(--text-dark)',
-                letterSpacing: '0.15px',
-              }}
+              style={{ fontSize: '14px', fontWeight: 500, color: 'var(--text-dark)', letterSpacing: '0.15px' }}
             >
               4,7 beoordeling · 936 Google-reviews
             </div>
@@ -141,7 +103,7 @@ export default function About() {
           ref={imageRef}
           style={{
             position: 'relative',
-            height: '580px',
+            aspectRatio: '4 / 5',
             borderRadius: 'var(--border-radius-xl)',
             overflow: 'hidden',
           }}
@@ -150,6 +112,7 @@ export default function About() {
             src="/images/cafe-interior.png"
             alt="Koffie Academie interieur"
             fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
             style={{ objectFit: 'cover' }}
           />
         </div>

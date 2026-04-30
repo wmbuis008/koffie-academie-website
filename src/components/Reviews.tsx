@@ -1,8 +1,7 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
 const reviews = [
   {
@@ -28,44 +27,29 @@ export default function Reviews() {
   const cardsRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         titleRef.current,
         { y: 30, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
-
       const cards = cardsRef.current ? Array.from(cardsRef.current.children) : []
       if (cards.length) {
         gsap.fromTo(
           cards,
           { y: 36, opacity: 0 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 0.85,
-            stagger: 0.13,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 78%',
-            },
+            y: 0, opacity: 1, duration: 0.85, stagger: 0.13, ease: 'power3.out',
+            scrollTrigger: { trigger: cardsRef.current, start: 'top 78%' },
           }
         )
       }
     })
-
     return () => ctx.revert()
   }, [])
 
@@ -73,10 +57,7 @@ export default function Reviews() {
     <section
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-soft-white)',
-        padding: '140px 48px',
-      }}
+      style={{ background: 'var(--color-soft-white)' }}
     >
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <h2
@@ -104,9 +85,9 @@ export default function Reviews() {
             marginBottom: '52px',
           }}
         >
-          {reviews.map((review, idx) => (
+          {reviews.map((review) => (
             <div
-              key={idx}
+              key={review.name}
               style={{
                 background: 'var(--color-warm-cream)',
                 padding: '36px 30px',
@@ -118,11 +99,8 @@ export default function Reviews() {
               }}
             >
               <div
-                style={{
-                  fontSize: '17px',
-                  color: 'var(--color-terracotta)',
-                  letterSpacing: '3px',
-                }}
+                aria-label={`${review.stars} van 5 sterren`}
+                style={{ fontSize: '17px', color: 'var(--color-terracotta)', letterSpacing: '3px' }}
               >
                 {'★'.repeat(review.stars)}
               </div>
@@ -159,6 +137,7 @@ export default function Reviews() {
             href="https://maps.google.com/?q=Koffie+Academie,+Overtoom+95,+Amsterdam"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Lees alle 936 reviews op Google Maps (opent in nieuw tabblad)"
             style={{
               fontSize: '15px',
               fontWeight: 500,

@@ -1,15 +1,18 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
 const hours = [
   { day: 'Maandag – Vrijdag', time: '08:30 – 16:00' },
   { day: 'Zaterdag – Zondag', time: '09:00 – 17:00' },
 ]
 
-const services = ['✓ Ter plaatse eten', '✓ Afhalen', '✗ Bezorging']
+const services = [
+  { label: 'Ter plaatse eten', available: true },
+  { label: 'Afhalen',          available: true },
+  { label: 'Bezorging',        available: false },
+]
 
 export default function HoursLocation() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -17,26 +20,18 @@ export default function HoursLocation() {
   const rightRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         [leftRef.current, rightRef.current],
         { y: 36, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 1,
-          stagger: 0.18,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          y: 0, opacity: 1, duration: 1, stagger: 0.18, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
     })
-
     return () => ctx.revert()
   }, [])
 
@@ -45,10 +40,7 @@ export default function HoursLocation() {
       id="hours"
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-dark-gray)',
-        padding: '140px 48px',
-      }}
+      style={{ background: 'var(--color-dark-gray)' }}
     >
       <div
         className="grid-2col"
@@ -74,14 +66,7 @@ export default function HoursLocation() {
             Openingstijden
           </h2>
 
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '20px',
-              marginBottom: '44px',
-            }}
-          >
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '44px' }}>
             {hours.map(({ day, time }) => (
               <div
                 key={day}
@@ -99,16 +84,15 @@ export default function HoursLocation() {
           </div>
 
           <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
-            {services.map((s) => (
+            {services.map(({ label, available }) => (
               <span
-                key={s}
-                style={{
-                  fontSize: '13px',
-                  opacity: 0.55,
-                  letterSpacing: '0.15px',
-                }}
+                key={label}
+                style={{ fontSize: '13px', opacity: 0.72, letterSpacing: '0.15px' }}
               >
-                {s}
+                <span aria-label={available ? 'Beschikbaar' : 'Niet beschikbaar'}>
+                  {available ? '✓' : '✗'}
+                </span>{' '}
+                {label}
               </span>
             ))}
           </div>
@@ -129,13 +113,7 @@ export default function HoursLocation() {
           </h2>
 
           <address
-            style={{
-              fontStyle: 'normal',
-              fontSize: '17px',
-              lineHeight: 1.85,
-              opacity: 0.72,
-              marginBottom: '32px',
-            }}
+            style={{ fontStyle: 'normal', fontSize: '17px', lineHeight: 1.85, opacity: 0.72, marginBottom: '32px' }}
           >
             Overtoom 95<br />
             1054 HD Amsterdam<br />
@@ -174,6 +152,7 @@ export default function HoursLocation() {
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
               title="Koffie Academie locatie"
+              aria-label="Interactieve kaart: Koffie Academie, Overtoom 95 Amsterdam"
             />
           </div>
 
@@ -181,6 +160,7 @@ export default function HoursLocation() {
             href="https://maps.google.com/?q=Koffie+Academie,+Overtoom+95,+Amsterdam"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Routebeschrijving naar Koffie Academie (opent in nieuw tabblad)"
             style={{
               fontSize: '14px',
               fontWeight: 500,

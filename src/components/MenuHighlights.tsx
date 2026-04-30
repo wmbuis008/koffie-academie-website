@@ -1,58 +1,24 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
-const menuItems = [
-  {
-    name: 'Eggs Benedict',
-    description: '2 poached eggs, ham, brioche, Hollandaise and a side salad',
-    price: '€10.50',
-    tag: 'Favoriet',
-  },
-  {
-    name: 'Huevos Avocados',
-    description: 'Toasted brioche, avocado, poached eggs, tomato relish, spinach and fennel salad',
-    price: '€10.50',
-    tag: null,
-  },
-  {
-    name: 'Caesar Salad',
-    description: 'Egg, romaine lettuce, parmesan and sourdough croutons',
-    price: '€11.50',
-    tag: null,
-  },
-  {
-    name: 'Quinoa Salad',
-    description: 'Quinoa, pumpkin, papadum and dukkah — Vegan & GF',
-    price: '€12.50',
-    tag: null,
-  },
-  {
-    name: 'K.A. Fries',
-    description: 'With truffle mayo & parmesan',
-    price: '€6.50',
-    tag: 'Populair',
-  },
-  {
-    name: 'Bitterballen',
-    description: 'With Dutch mustard',
-    price: '€6.70',
-    tag: null,
-  },
-  {
-    name: 'K.A. Platter',
-    description: 'A little bit of everything and more',
-    price: '€17.00',
-    tag: 'Aanbevolen',
-  },
-  {
-    name: 'Amaretto Sour',
-    description: 'Disaronno, Bourbon, Egg white, Lemon',
-    price: '€9.00',
-    tag: null,
-  },
+interface MenuHighlightItem {
+  name: string
+  description: string
+  price: string
+  tag: string | null
+}
+
+const menuItems: MenuHighlightItem[] = [
+  { name: 'Eggs Benedict', description: '2 poached eggs, ham, brioche, Hollandaise and a side salad', price: '€10.50', tag: 'Favoriet' },
+  { name: 'Huevos Avocados', description: 'Toasted brioche, avocado, poached eggs, tomato relish, spinach and fennel salad', price: '€10.50', tag: null },
+  { name: 'Caesar Salad', description: 'Egg, romaine lettuce, parmesan and sourdough croutons', price: '€11.50', tag: null },
+  { name: 'Quinoa Salad', description: 'Quinoa, pumpkin, papadum and dukkah — Vegan & GF', price: '€12.50', tag: null },
+  { name: 'K.A. Fries', description: 'With truffle mayo & parmesan', price: '€6.50', tag: 'Populair' },
+  { name: 'Bitterballen', description: 'With Dutch mustard', price: '€6.70', tag: null },
+  { name: 'K.A. Platter', description: 'A little bit of everything and more', price: '€17.00', tag: 'Aanbevolen' },
+  { name: 'Amaretto Sour', description: 'Disaronno, Bourbon, Egg white, Lemon', price: '€9.00', tag: null },
 ]
 
 export default function MenuHighlights() {
@@ -61,44 +27,29 @@ export default function MenuHighlights() {
   const headerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headerRef.current,
         { y: 30, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
-
       const cards = cardsRef.current ? Array.from(cardsRef.current.children) : []
       if (cards.length) {
         gsap.fromTo(
           cards,
           { y: 44, opacity: 0 },
           {
-            y: 0,
-            opacity: 1,
-            duration: 0.75,
-            stagger: 0.07,
-            ease: 'power3.out',
-            scrollTrigger: {
-              trigger: cardsRef.current,
-              start: 'top 78%',
-            },
+            y: 0, opacity: 1, duration: 0.75, stagger: 0.07, ease: 'power3.out',
+            scrollTrigger: { trigger: cardsRef.current, start: 'top 78%' },
           }
         )
       }
     })
-
     return () => ctx.revert()
   }, [])
 
@@ -107,10 +58,7 @@ export default function MenuHighlights() {
       id="menu"
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-soft-white)',
-        padding: '140px 48px',
-      }}
+      style={{ background: 'var(--color-soft-white)' }}
     >
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '72px' }}>
@@ -126,13 +74,7 @@ export default function MenuHighlights() {
           >
             Menu Highlights
           </h2>
-          <p
-            style={{
-              fontSize: '17px',
-              color: 'var(--text-muted-dark)',
-              fontWeight: 300,
-            }}
-          >
+          <p style={{ fontSize: '17px', color: 'var(--text-muted-dark)', fontWeight: 300 }}>
             Van ochtend tot avond
           </p>
         </div>
@@ -147,9 +89,9 @@ export default function MenuHighlights() {
             marginBottom: '52px',
           }}
         >
-          {menuItems.map((item, idx) => (
+          {menuItems.map((item) => (
             <div
-              key={idx}
+              key={item.name}
               style={{
                 background: 'var(--color-warm-cream)',
                 padding: '28px 22px 24px',
@@ -202,23 +144,11 @@ export default function MenuHighlights() {
               >
                 {item.name}
               </h3>
-              <p
-                style={{
-                  fontSize: '13px',
-                  color: 'var(--text-muted-dark)',
-                  lineHeight: 1.65,
-                  flex: 1,
-                }}
-              >
+              <p style={{ fontSize: '13px', color: 'var(--text-muted-dark)', lineHeight: 1.65, flex: 1 }}>
                 {item.description}
               </p>
               <div
-                style={{
-                  fontSize: '16px',
-                  fontWeight: 600,
-                  color: 'var(--color-wood-brown)',
-                  marginTop: '4px',
-                }}
+                style={{ fontSize: '16px', fontWeight: 600, color: 'var(--color-wood-brown)', marginTop: '4px' }}
               >
                 {item.price}
               </div>

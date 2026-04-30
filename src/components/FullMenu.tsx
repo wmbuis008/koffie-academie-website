@@ -1,10 +1,11 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
 type Tab = 'dinner' | 'borrel' | 'extras' | 'cocktails' | 'spirits'
+
+const FADE_DURATION_MS = 140
 
 const tabs: { id: Tab; label: string }[] = [
   { id: 'dinner',    label: 'Dinner' },
@@ -82,54 +83,54 @@ const spiritsGroups: { title: string; items: { name: string; price: string }[] }
   {
     title: 'Vodka · Gin · Rum',
     items: [
-      { name: 'Ketel One Vodka',     price: '€4.00' },
-      { name: 'Tanqueray',           price: '€4.00' },
-      { name: 'Hendricks',           price: '€6.00' },
-      { name: 'Havana Club 3yr',     price: '€4.00' },
-      { name: 'Havana Club Especial',price: '€4.50' },
-      { name: 'Havana Club 7yr',     price: '€5.00' },
-      { name: 'Union 55',            price: '€5.00' },
-      { name: 'Sailor Jerry',        price: '€4.50' },
-      { name: 'Bundaberg Rum',       price: '€6.00' },
+      { name: 'Ketel One Vodka',      price: '€4.00' },
+      { name: 'Tanqueray',            price: '€4.00' },
+      { name: 'Hendricks',            price: '€6.00' },
+      { name: 'Havana Club 3yr',      price: '€4.00' },
+      { name: 'Havana Club Especial', price: '€4.50' },
+      { name: 'Havana Club 7yr',      price: '€5.00' },
+      { name: 'Union 55',             price: '€5.00' },
+      { name: 'Sailor Jerry',         price: '€4.50' },
+      { name: 'Bundaberg Rum',        price: '€6.00' },
     ],
   },
   {
     title: 'Whiskey · Bourbon · Tequila · Cognac',
     items: [
-      { name: 'Jack Daniels',         price: '€4.50' },
-      { name: 'Jack Daniels Honey',   price: '€4.50' },
-      { name: 'Bulleit Bourbon',      price: '€5.00' },
-      { name: 'Johnnie Walker Black', price: '€6.00' },
-      { name: 'Chivas 12yr',          price: '€6.50' },
-      { name: 'Talisker 10',          price: '€6.00' },
-      { name: 'Martell VS',           price: '€6.00' },
-      { name: 'Jose Cuervo Blanco',   price: '€4.00' },
-      { name: 'Corralejo Blanco',     price: '€5.00' },
-      { name: 'Corralejo Reposado',   price: '€6.00' },
+      { name: 'Jack Daniels',          price: '€4.50' },
+      { name: 'Jack Daniels Honey',    price: '€4.50' },
+      { name: 'Bulleit Bourbon',       price: '€5.00' },
+      { name: 'Johnnie Walker Black',  price: '€6.00' },
+      { name: 'Chivas 12yr',           price: '€6.50' },
+      { name: 'Talisker 10',           price: '€6.00' },
+      { name: 'Martell VS',            price: '€6.00' },
+      { name: 'Jose Cuervo Blanco',    price: '€4.00' },
+      { name: 'Corralejo Blanco',      price: '€5.00' },
+      { name: 'Corralejo Reposado',    price: '€6.00' },
     ],
   },
   {
     title: 'Other',
     items: [
-      { name: 'Mezcal Vida',    price: '€7.00' },
-      { name: 'Cointreau',      price: '€4.00' },
-      { name: 'Disaronno',      price: '€4.00' },
-      { name: "Bailey's",       price: '€4.00' },
-      { name: 'Licor 43',       price: '€4.00' },
-      { name: 'Malibu',         price: '€4.00' },
-      { name: 'Sambuca',        price: '€4.00' },
-      { name: 'Jonge Jenever',  price: '€3.50' },
-      { name: 'Aperol',         price: '€4.00' },
-      { name: 'Campari',        price: '€4.00' },
+      { name: 'Mezcal Vida',   price: '€7.00' },
+      { name: 'Cointreau',     price: '€4.00' },
+      { name: 'Disaronno',     price: '€4.00' },
+      { name: "Bailey's",      price: '€4.00' },
+      { name: 'Licor 43',      price: '€4.00' },
+      { name: 'Malibu',        price: '€4.00' },
+      { name: 'Sambuca',       price: '€4.00' },
+      { name: 'Jonge Jenever', price: '€3.50' },
+      { name: 'Aperol',        price: '€4.00' },
+      { name: 'Campari',       price: '€4.00' },
     ],
   },
 ]
 
 function Badge({ type }: { type: 'V' | 'VEGAN' | 'GF' }) {
   const config = {
-    V:     { label: 'V',       bg: 'rgba(90,170,122,0.15)', color: '#6bbf8a', border: 'rgba(90,170,122,0.35)' },
+    V:     { label: 'V',        bg: 'rgba(90,170,122,0.15)', color: '#6bbf8a', border: 'rgba(90,170,122,0.35)' },
     VEGAN: { label: '🌱 Vegan', bg: 'rgba(90,170,122,0.15)', color: '#6bbf8a', border: 'rgba(90,170,122,0.35)' },
-    GF:    { label: 'GF',      bg: 'rgba(106,160,196,0.15)',color: '#7aa8cc', border: 'rgba(106,160,196,0.35)' },
+    GF:    { label: 'GF',       bg: 'rgba(106,160,196,0.15)', color: '#7aa8cc', border: 'rgba(106,160,196,0.35)' },
   }[type]
 
   return (
@@ -151,10 +152,7 @@ function Badge({ type }: { type: 'V' | 'VEGAN' | 'GF' }) {
 
 function MenuRow({ item }: { item: MenuItem }) {
   return (
-    <div style={{
-      padding: '15px 0',
-      borderBottom: '1px solid rgba(245,240,232,0.07)',
-    }}>
+    <div style={{ padding: '15px 0', borderBottom: '1px solid rgba(245,240,232,0.07)' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '1.5rem' }}>
         <span style={{ fontFamily: 'var(--font-serif)', fontSize: '16px', fontWeight: 600, color: 'var(--text-light)' }}>
           {item.name}
@@ -190,7 +188,8 @@ export default function FullMenu() {
   const contentRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         headerRef.current,
@@ -210,22 +209,18 @@ export default function FullMenu() {
     setTimeout(() => {
       setActiveTab(tab)
       setVisible(true)
-    }, 140)
+    }, FADE_DURATION_MS)
   }
 
   const contentMap: Record<Tab, React.ReactNode> = {
-    dinner: dinner.map((item, i) => <MenuRow key={i} item={item} />),
-    borrel: borrel.map((item, i) => <MenuRow key={i} item={item} />),
+    dinner:    dinner.map((item) => <MenuRow key={item.name} item={item} />),
+    borrel:    borrel.map((item) => <MenuRow key={item.name} item={item} />),
     extras: (
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: '0 3rem',
-      }}>
-        {extras.map((item, i) => <MenuRow key={i} item={item} />)}
+      <div className="menu-inner-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0 3rem' }}>
+        {extras.map((item) => <MenuRow key={item.name} item={item} />)}
       </div>
     ),
-    cocktails: cocktails.map((item, i) => <MenuRow key={i} item={item} />),
+    cocktails: cocktails.map((item) => <MenuRow key={item.name} item={item} />),
     spirits: (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem' }}>
         {spiritsGroups.map((group) => (
@@ -242,9 +237,9 @@ export default function FullMenu() {
             }}>
               {group.title}
             </p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0 3rem' }}>
-              {group.items.map((item, i) => (
-                <div key={i} style={{
+            <div className="menu-inner-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0 3rem' }}>
+              {group.items.map((item) => (
+                <div key={item.name} style={{
                   display: 'flex',
                   justifyContent: 'space-between',
                   alignItems: 'center',
@@ -268,10 +263,7 @@ export default function FullMenu() {
       id="volledig-menu"
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-deep-black)',
-        padding: '120px 48px',
-      }}
+      style={{ background: 'var(--color-deep-black)' }}
     >
       <div style={{ maxWidth: '820px', margin: '0 auto' }}>
 
@@ -287,21 +279,28 @@ export default function FullMenu() {
             Volledig Menu
           </h2>
           <p style={{ fontSize: '14px', color: 'var(--text-muted)', fontWeight: 300 }}>
-            Sloterdijk · Kadijks 230, Amsterdam
+            Overtoom 95, Amsterdam
           </p>
         </div>
 
-        {/* Tab navigation */}
-        <div style={{
-          display: 'flex',
-          borderBottom: '1px solid rgba(245,240,232,0.1)',
-          marginBottom: '8px',
-          overflowX: 'auto',
-          scrollbarWidth: 'none',
-        }}>
+        <div
+          role="tablist"
+          aria-label="Menu categorieën"
+          style={{
+            display: 'flex',
+            borderBottom: '1px solid rgba(245,240,232,0.1)',
+            marginBottom: '8px',
+            overflowX: 'auto',
+            scrollbarWidth: 'none',
+          }}
+        >
           {tabs.map(tab => (
             <button
               key={tab.id}
+              role="tab"
+              id={`tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls={`panel-${tab.id}`}
               onClick={() => handleTabChange(tab.id)}
               style={{
                 flex: '0 0 auto',
@@ -337,7 +336,6 @@ export default function FullMenu() {
           ))}
         </div>
 
-        {/* Diet legend */}
         <div style={{
           display: 'flex',
           gap: '12px',
@@ -352,12 +350,14 @@ export default function FullMenu() {
           <Badge type="GF" /> Gluten-free
         </div>
 
-        {/* Menu content */}
         <div
           ref={contentRef}
+          role="tabpanel"
+          id={`panel-${activeTab}`}
+          aria-labelledby={`tab-${activeTab}`}
           style={{
             opacity: visible ? 1 : 0,
-            transition: 'opacity 0.14s ease',
+            transition: `opacity ${FADE_DURATION_MS}ms ease`,
           }}
         >
           {contentMap[activeTab]}

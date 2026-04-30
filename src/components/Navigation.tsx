@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import Image from 'next/image'
-import { gsap } from 'gsap'
+import { gsap } from '@/lib/gsap'
 
 const navLinks = [
   { label: 'Menu', href: '#menu' },
@@ -12,14 +12,20 @@ const navLinks = [
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    gsap.fromTo(
-      navRef.current,
-      { y: -80, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.4 }
-    )
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
+    const ctx = gsap.context(() => {
+      gsap.fromTo(
+        navRef.current,
+        { y: -80, opacity: 0 },
+        { y: 0, opacity: 1, duration: 1.1, ease: 'power3.out', delay: 0.4 }
+      )
+    })
+    return () => ctx.revert()
   }, [])
 
   useEffect(() => {
@@ -27,6 +33,8 @@ export default function Navigation() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
+
+  const closeMenu = () => setMenuOpen(false)
 
   return (
     <nav
@@ -54,11 +62,8 @@ export default function Navigation() {
       >
         <a
           href="#"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-          }}
+          aria-label="Koffie Academie — naar boven"
+          style={{ display: 'flex', alignItems: 'center', gap: '10px' }}
         >
           <Image
             src="/afbeeldingen/ka-logo.png"
@@ -126,7 +131,31 @@ export default function Navigation() {
             Vind Ons
           </a>
         </div>
+
+        <button
+          className="hamburger"
+          aria-label={menuOpen ? 'Menu sluiten' : 'Menu openen'}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen(!menuOpen)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </div>
+
+      {menuOpen && (
+        <div className="mobile-menu" role="navigation" aria-label="Mobiel menu">
+          {navLinks.map(({ label, href }) => (
+            <a key={label} href={href} onClick={closeMenu}>
+              {label}
+            </a>
+          ))}
+          <a href="#location" onClick={closeMenu}>
+            Vind Ons
+          </a>
+        </div>
+      )}
     </nav>
   )
 }

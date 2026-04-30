@@ -2,40 +2,15 @@
 
 import { useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
 const photos = [
-  {
-    src: '/afbeeldingen/coffee-beans.jpg',
-    alt: 'Close-up of roasted coffee beans',
-    quote: null,
-  },
-  {
-    src: '/afbeeldingen/latte-croissant.jpg',
-    alt: 'Latte art with croissant and cookie on wooden table',
-    quote: null,
-  },
-  {
-    src: '/afbeeldingen/latte-pastries.jpg',
-    alt: 'Latte with heart art, pastry display in background',
-    quote: null,
-  },
-  {
-    src: '/afbeeldingen/bakery-display.jpg',
-    alt: 'Bakery display case with brownies, coconut squares, croissants, banana bread',
-    quote: null,
-  },
-  {
-    src: '/afbeeldingen/aeropress-man.jpg',
-    alt: 'Man holding aeropress in front of Dutch Aeropress Championship poster',
-    quote: null,
-  },
-  {
-    src: '/afbeeldingen/iced-coffee.jpg',
-    alt: 'Two iced coffees on sunny terrace',
-    quote: null,
-  },
+  { src: '/afbeeldingen/coffee-beans.jpg',    alt: 'Close-up van geroosterde koffiebonen' },
+  { src: '/afbeeldingen/latte-croissant.jpg', alt: 'Latte art met croissant en koekje op houten tafel' },
+  { src: '/afbeeldingen/latte-pastries.jpg',  alt: 'Latte met hartmotief, gebakken display op de achtergrond' },
+  { src: '/afbeeldingen/bakery-display.jpg',  alt: 'Gebakken display met brownies, kokosrepen, croissants en bananenbrood' },
+  { src: '/afbeeldingen/aeropress-man.jpg',   alt: 'Man houdt aeropress vast voor Dutch Aeropress Championship poster' },
+  { src: '/afbeeldingen/iced-coffee.jpg',     alt: 'Twee ijskoffies op zonnig terras' },
 ]
 
 export default function AtmosphereGallery() {
@@ -44,55 +19,38 @@ export default function AtmosphereGallery() {
   const titleRef = useRef<HTMLHeadingElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         titleRef.current,
         { y: 30, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power3.out',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top 72%',
-          },
+          y: 0, opacity: 1, duration: 0.9, ease: 'power3.out',
+          scrollTrigger: { trigger: sectionRef.current, start: 'top 72%' },
         }
       )
-
       const items = gridRef.current ? Array.from(gridRef.current.children) : []
       if (items.length) {
         gsap.fromTo(
           items,
           { scale: 0.92, opacity: 0 },
           {
-            scale: 1,
-            opacity: 1,
-            duration: 0.7,
-            stagger: 0.15,
-            ease: 'power2.out',
-            scrollTrigger: {
-              trigger: gridRef.current,
-              start: 'top 78%',
-            },
+            scale: 1, opacity: 1, duration: 0.7, stagger: 0.15, ease: 'power2.out',
+            scrollTrigger: { trigger: gridRef.current, start: 'top 78%' },
           }
         )
       }
     })
-
     return () => ctx.revert()
   }, [])
 
   return (
     <section
+      id="galerij"
       ref={sectionRef}
       className="section-padding"
-      style={{
-        background: 'var(--color-warm-cream)',
-        padding: '140px 48px',
-      }}
+      style={{ background: 'var(--color-warm-cream)' }}
     >
       <div style={{ maxWidth: '1600px', margin: '0 auto' }}>
         <h2
@@ -119,9 +77,9 @@ export default function AtmosphereGallery() {
             gap: '18px',
           }}
         >
-          {photos.map((photo, idx) => (
+          {photos.map((photo) => (
             <div
-              key={idx}
+              key={photo.src}
               style={{
                 position: 'relative',
                 aspectRatio: '1 / 1',
@@ -130,19 +88,10 @@ export default function AtmosphereGallery() {
                 cursor: 'default',
               }}
             >
-              {/* Inner wrapper handles hover scale so it clips inside the border-radius */}
               <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  transition: 'transform 0.4s ease',
-                }}
-                onMouseEnter={(e) =>
-                  ((e.currentTarget as HTMLElement).style.transform = 'scale(1.03)')
-                }
-                onMouseLeave={(e) =>
-                  ((e.currentTarget as HTMLElement).style.transform = 'scale(1)')
-                }
+                style={{ position: 'absolute', inset: 0, transition: 'transform 0.4s ease' }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLElement).style.transform = 'scale(1.03)')}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLElement).style.transform = 'scale(1)')}
               >
                 <Image
                   src={photo.src}
@@ -152,29 +101,6 @@ export default function AtmosphereGallery() {
                   style={{ objectFit: 'cover', objectPosition: 'center' }}
                 />
               </div>
-
-              {photo.quote && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    bottom: '22px',
-                    left: '22px',
-                    right: '22px',
-                    background: 'rgba(26, 26, 26, 0.8)',
-                    backdropFilter: 'blur(14px)',
-                    color: 'var(--text-light)',
-                    padding: '15px 18px',
-                    borderRadius: 'var(--border-radius)',
-                    fontSize: '13px',
-                    fontStyle: 'italic',
-                    lineHeight: 1.65,
-                    letterSpacing: '0.1px',
-                    zIndex: 1,
-                  }}
-                >
-                  {photo.quote}
-                </div>
-              )}
             </div>
           ))}
         </div>

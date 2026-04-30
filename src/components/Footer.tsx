@@ -1,55 +1,43 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { gsap } from '@/lib/gsap'
 
 const navLinks = [
-  { label: 'Menu', href: '#menu' },
-  { label: 'Over Ons', href: '#about' },
-  { label: 'Openingstijden', href: '#hours' },
-  { label: 'Contact', href: '#location' },
+  { label: 'Menu',          href: '#menu' },
+  { label: 'Over Ons',      href: '#about' },
+  { label: 'Openingstijden',href: '#hours' },
+  { label: 'Contact',       href: '#location' },
 ]
 
 const socialLinks = [
-  { label: 'Instagram', href: 'https://www.instagram.com/koffieacademie/', external: true },
-  {
-    label: 'Google Maps',
-    href: 'https://maps.google.com/?q=Koffie+Academie,+Overtoom+95,+Amsterdam',
-    external: true,
-  },
+  { label: 'Instagram',   href: 'https://www.instagram.com/koffieacademie/', external: true },
+  { label: 'Google Maps', href: 'https://maps.google.com/?q=Koffie+Academie,+Overtoom+95,+Amsterdam', external: true },
 ]
 
 export default function Footer() {
   const footerRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger)
-
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
     const ctx = gsap.context(() => {
       gsap.fromTo(
         footerRef.current,
         { y: 24, opacity: 0 },
         {
-          y: 0,
-          opacity: 1,
-          duration: 0.9,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: footerRef.current,
-            start: 'top 88%',
-          },
+          y: 0, opacity: 1, duration: 0.9, ease: 'power2.out',
+          scrollTrigger: { trigger: footerRef.current, start: 'top 88%' },
         }
       )
     })
-
     return () => ctx.revert()
   }, [])
 
   const linkStyle = {
     display: 'block',
     fontSize: '14px',
-    opacity: 0.68,
+    opacity: 0.75,
     marginBottom: '11px',
     transition: 'opacity 0.2s',
     letterSpacing: '0.15px',
@@ -58,10 +46,10 @@ export default function Footer() {
   return (
     <footer
       ref={footerRef}
+      className="footer-section"
       style={{
         background: 'var(--color-deep-black)',
         color: 'var(--text-light)',
-        padding: '80px 48px 44px',
       }}
     >
       <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
@@ -90,13 +78,7 @@ export default function Footer() {
             >
               Koffie Academie
             </div>
-            <div
-              style={{
-                fontSize: '13px',
-                opacity: 0.38,
-                lineHeight: 1.7,
-              }}
-            >
+            <div style={{ fontSize: '13px', opacity: 0.65, lineHeight: 1.7 }}>
               Italiaans eigendom<br />Amsterdam · Est. 2019
             </div>
           </div>
@@ -109,7 +91,7 @@ export default function Footer() {
                 fontWeight: 600,
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
-                opacity: 0.36,
+                opacity: 0.65,
                 marginBottom: '20px',
               }}
             >
@@ -121,7 +103,7 @@ export default function Footer() {
                 href={href}
                 style={linkStyle}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
               >
                 {label}
               </a>
@@ -136,27 +118,20 @@ export default function Footer() {
                 fontWeight: 600,
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
-                opacity: 0.36,
+                opacity: 0.65,
                 marginBottom: '20px',
               }}
             >
               Contact
             </div>
-            <address
-              style={{
-                fontStyle: 'normal',
-                fontSize: '14px',
-                lineHeight: 1.82,
-                opacity: 0.68,
-              }}
-            >
+            <address style={{ fontStyle: 'normal', fontSize: '14px', lineHeight: 1.82, opacity: 0.75 }}>
               Overtoom 95<br />
               1054 HD Amsterdam<br />
               <a
                 href="tel:+31203707981"
                 style={{ color: 'inherit', transition: 'opacity 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
               >
                 +31 20 370 7981
               </a><br />
@@ -164,7 +139,7 @@ export default function Footer() {
                 href="mailto:overtoom@koffie-academie.nl"
                 style={{ color: 'inherit', transition: 'opacity 0.2s' }}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
               >
                 overtoom@koffie-academie.nl
               </a>
@@ -179,7 +154,7 @@ export default function Footer() {
                 fontWeight: 600,
                 textTransform: 'uppercase',
                 letterSpacing: '2px',
-                opacity: 0.36,
+                opacity: 0.65,
                 marginBottom: '20px',
               }}
             >
@@ -191,9 +166,10 @@ export default function Footer() {
                 href={href}
                 target={external ? '_blank' : undefined}
                 rel={external ? 'noopener noreferrer' : undefined}
+                aria-label={external ? `${label} (opent in nieuw tabblad)` : label}
                 style={linkStyle}
                 onMouseEnter={(e) => (e.currentTarget.style.opacity = '1')}
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.68')}
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = '0.75')}
               >
                 {label}
               </a>
@@ -201,13 +177,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div
-          style={{
-            fontSize: '12px',
-            opacity: 0.28,
-            letterSpacing: '0.3px',
-          }}
-        >
+        <div style={{ fontSize: '12px', opacity: 0.55, letterSpacing: '0.3px' }}>
           © 2026 Koffie Academie. Alle rechten voorbehouden.
         </div>
       </div>

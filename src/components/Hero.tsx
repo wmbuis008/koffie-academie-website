@@ -11,31 +11,16 @@ export default function Hero() {
   const scrollRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
-
-    tl.fromTo(
-      titleRef.current,
-      { y: 50, opacity: 0 },
-      { y: 0, opacity: 1, duration: 1.3, delay: 0.6 }
-    )
-      .fromTo(
-        subtitleRef.current,
-        { y: 30, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1 },
-        '-=0.65'
-      )
-      .fromTo(
-        buttonsRef.current,
-        { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.8 },
-        '-=0.55'
-      )
-      .fromTo(
-        scrollRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.7 },
-        '-=0.3'
-      )
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) return
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+      tl.fromTo(titleRef.current, { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 1.3, delay: 0.6 })
+        .fromTo(subtitleRef.current, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1 }, '-=0.65')
+        .fromTo(buttonsRef.current, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, '-=0.55')
+        .fromTo(scrollRef.current, { opacity: 0 }, { opacity: 1, duration: 0.7 }, '-=0.3')
+    })
+    return () => ctx.revert()
   }, [])
 
   return (
@@ -51,29 +36,27 @@ export default function Hero() {
         overflow: 'hidden',
       }}
     >
-      {/* Achtergrondafbeelding */}
-      <div style={{ position: 'absolute', inset: 0 }}>
+      <div style={{ position: 'absolute', inset: 0 }} aria-hidden="true">
         <Image
           src="/images/cafe-interior.png"
           alt=""
           fill
           priority
+          sizes="100vw"
           style={{ objectFit: 'cover', opacity: 0.38 }}
         />
       </div>
 
-      {/* Gradient overlay */}
       <div
+        aria-hidden="true"
         style={{
           position: 'absolute',
           inset: 0,
-          background:
-            'linear-gradient(to bottom, rgba(26,26,26,0.25) 0%, rgba(26,26,26,0.72) 100%)',
+          background: 'linear-gradient(to bottom, rgba(26,26,26,0.25) 0%, rgba(26,26,26,0.72) 100%)',
           zIndex: 1,
         }}
       />
 
-      {/* Inhoud */}
       <div
         style={{
           position: 'relative',
@@ -149,21 +132,17 @@ export default function Hero() {
               letterSpacing: '0.3px',
               transition: 'border-color 0.2s',
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.5)')
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.22)')
-            }
+            onMouseEnter={(e) => (e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.5)')}
+            onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(245, 240, 232, 0.22)')}
           >
             Vind ons
           </a>
         </div>
       </div>
 
-      {/* Scroll indicator */}
       <div
         ref={scrollRef}
+        aria-hidden="true"
         style={{
           position: 'absolute',
           bottom: '40px',
@@ -177,21 +156,14 @@ export default function Hero() {
           color: 'var(--text-muted)',
         }}
       >
-        <span
-          style={{
-            fontSize: '10px',
-            letterSpacing: '2.5px',
-            textTransform: 'uppercase',
-          }}
-        >
+        <span style={{ fontSize: '10px', letterSpacing: '2.5px', textTransform: 'uppercase' }}>
           Scroll
         </span>
         <div
           style={{
             width: '1px',
             height: '52px',
-            background:
-              'linear-gradient(to bottom, rgba(245, 240, 232, 0.35), transparent)',
+            background: 'linear-gradient(to bottom, rgba(245, 240, 232, 0.35), transparent)',
           }}
         />
       </div>
