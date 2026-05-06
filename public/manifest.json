@@ -1,0 +1,22 @@
+{
+  "name": "Koffie Academie",
+  "short_name": "Koffie Academie",
+  "description": "Specialty koffie, authentieke focaccia & Italiaanse sfeer op Overtoom 95, Amsterdam.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#faf8f4",
+  "theme_color": "#c4683a",
+  "lang": "nl",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/afbeeldingen/ka-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle"],
+  "related_applications": [],
+  "prefer_related_applications": false
+}
